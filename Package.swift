@@ -12,15 +12,15 @@ let package = Package(
         .library(name: "CLIPBenchCore", targets: ["CLIPBenchCore"]),
     ],
     dependencies: [
-        .package(path: "../PhotoAIKitTest")
+        .package(path: "../PhotoAIKit")
     ],
     targets: [
         .target(
             name: "CLIPBenchCore",
             dependencies: [
-                .product(name: "PhotoAIContracts", package: "PhotoAIKitTest"),
-                .product(name: "PhotoAIWorkflows", package: "PhotoAIKitTest"),
-                .product(name: "CoreAICLIPBackend", package: "PhotoAIKitTest"),
+                .product(name: "PhotoAIContracts", package: "PhotoAIKit"),
+                .product(name: "PhotoAIWorkflows", package: "PhotoAIKit"),
+                .product(name: "CoreAICLIPBackend", package: "PhotoAIKit"),
             ]
         ),
         .executableTarget(
