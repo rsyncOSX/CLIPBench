@@ -12,7 +12,8 @@ let package = Package(
         .library(name: "CLIPBenchCore", targets: ["CLIPBenchCore"]),
     ],
     dependencies: [
-        .package(path: "../PhotoAIKit")
+        .package(path: "../PhotoAIKit"),
+        .package(path: "../RawParserKit"),
     ],
     targets: [
         .target(
@@ -21,6 +22,7 @@ let package = Package(
                 .product(name: "PhotoAIContracts", package: "PhotoAIKit"),
                 .product(name: "PhotoAIWorkflows", package: "PhotoAIKit"),
                 .product(name: "CoreAICLIPBackend", package: "PhotoAIKit"),
+                .product(name: "RawParserKit", package: "RawParserKit"),
             ]
         ),
         .executableTarget(

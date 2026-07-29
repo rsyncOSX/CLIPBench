@@ -1,7 +1,10 @@
 @testable import CLIPBenchCore
+import CoreGraphics
 import Foundation
+import ImageIO
 import PhotoAIContracts
 import Testing
+import UniformTypeIdentifiers
 
 @Suite("CLIPBench core")
 struct CLIPBenchCoreTests {
@@ -50,11 +53,39 @@ struct CLIPBenchCoreTests {
         defer { try? FileManager.default.removeItem(at: root) }
         try Data().write(to: root.appendingPathComponent("one.JPG"))
         try Data().write(to: root.appendingPathComponent("two.heic"))
+        try Data().write(to: root.appendingPathComponent("three.ARW"))
         try Data().write(to: root.appendingPathComponent("notes.txt"))
 
         let sources = try ImageFileDiscovery.sources(in: root)
 
-        #expect(sources.map(\.displayName) == ["one.JPG", "two.heic"])
+        #expect(
+            sources.map(\.displayName)
+                == ["one.JPG", "three.ARW", "two.heic"]
+        )
+    }
+
+    @Test("ARW embedded JPEG is decoded without writing a sidecar")
+    func arwEmbeddedJPEGDecoding() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let rawURL = root.appendingPathComponent("photo.ARW")
+        try writeTestJPEG(to: rawURL)
+        let source = AIImageSource(
+            id: UUID(),
+            url: rawURL,
+            displayName: rawURL.lastPathComponent
+        )
+
+        let image = try await ImageIOImageDecoder(
+            thumbnailMaximumPixelSize: 64
+        ).image(for: source)
+
+        #expect(image.width == 2)
+        #expect(image.height == 2)
+        #expect(
+            try FileManager.default.contentsOfDirectory(atPath: root.path)
+                == ["photo.ARW"]
+        )
     }
 
     @Test(
@@ -111,5 +142,35 @@ struct CLIPBenchCoreTests {
             withIntermediateDirectories: true
         )
         return url
+    }
+
+    private func writeTestJPEG(to url: URL) throws {
+        let colorSpace = try #require(CGColorSpace(name: CGColorSpace.sRGB))
+        let context = try #require(CGContext(
+            data: nil,
+            width: 2,
+            height: 2,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ))
+        let color = try #require(
+            CGColor(
+                colorSpace: colorSpace,
+                components: [0.25, 0.5, 0.75, 1]
+            )
+        )
+        context.setFillColor(color)
+        context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+        let image = try #require(context.makeImage())
+        let destination = try #require(CGImageDestinationCreateWithURL(
+            url as CFURL,
+            UTType.jpeg.identifier as CFString,
+            1,
+            nil
+        ))
+        CGImageDestinationAddImage(destination, image, nil)
+        #expect(CGImageDestinationFinalize(destination))
     }
 }

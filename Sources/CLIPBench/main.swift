@@ -271,8 +271,8 @@ struct CLIPBenchCommand {
       clipbench parity --reference SOURCE_JSON --model MODEL_BUNDLE [--minimum-cosine 0.99]
 
     IMAGE INPUT
-      JPEG, PNG, HEIC/HEIF, and TIFF files are supported. Extracted RAW
-      thumbnails can be indexed once written in one of these formats.
+      JPEG, PNG, HEIC/HEIF, TIFF, and Sony ARW files are supported. ARW files
+      are indexed from their embedded JPEG previews without writing sidecars.
     """
 }
 

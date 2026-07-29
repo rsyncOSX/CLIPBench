@@ -2,10 +2,11 @@ import CoreGraphics
 import Foundation
 import ImageIO
 import PhotoAIContracts
+import RawParserKit
 
 public enum ImageFileDiscovery {
     public static let supportedExtensions: Set<String> = [
-        "jpg", "jpeg", "png", "heic", "heif", "tif", "tiff",
+        "jpg", "jpeg", "png", "heic", "heif", "tif", "tiff", "arw",
     ]
 
     public static func sources(
@@ -59,6 +60,16 @@ public struct ImageIOImageDecoder: ImageDecoding {
 
     public func image(for source: AIImageSource) async throws -> CGImage {
         try Task.checkCancellation()
+        if source.url.pathExtension.lowercased() == "arw" {
+            guard let image = await SonyEmbeddedJPEGExtractor
+                .extractEmbeddedJPEG(from: source.url)
+            else {
+                throw CLIPBenchError.cannotDecodeImage(source.url.path)
+            }
+            try Task.checkCancellation()
+            return image
+        }
+
         guard let imageSource = CGImageSourceCreateWithURL(
             source.url as CFURL,
             nil
