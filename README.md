@@ -59,14 +59,14 @@ The distributor must regenerate `SHA256SUMS.txt` and recreate the ZIP after code
 
 ## In use for test
 
-I have installed the complete package in `/Users/thomas/bin` catalog and my ARW raw-files are saved on a external SSD-drive at `/Volumes/MacMini4/Pictures_raw`. The `clipbench` does a recursive scan of all catalogs and saves index at root of photo catalog (`/Volumes/MacMini4/Pictures_raw/.clipbench`). A scan of all my 2900 ARW files on my MacBook Mini M4 (standard model) took 2 min 16 seconds. 
+I have installed the complete package in `/Users/thomas/bin` catalog and my ARW raw-files are saved on a external SSD-drive at `/Volumes/MacMini4/Pictures_raw`. The `clipbench` does a recursive scan of all catalogs and saves index at root of photo catalog (`/Volumes/MacMini4/Pictures_raw/.clipbench`). A scan and indexing of all my 2900 ARW files on my MacBook Mini M4 (standard model) took 2 min 16 seconds. 
 
 ![](images/search.png)
 ![](images/cormorant1.png)
 ![](images/cormorant2.png)
 
 
-## Verify the shasum 
+## Verify the shasum of the package
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -98,21 +98,18 @@ shasum -a 256 -c SHA256SUMS.txt
 ```sh
 ./clipbench index "/Volumes/MacMini4/Pictures_raw" --model ./CLIP-DataComp
 ```
-## Clip sematic search produces the following
+## Clip semantic search produces the following
+
+Search for "cormorant" in about 3000 ARW-files across several sub catalogs is completed in seconds. 
 
 ```sh
 ./clipbench search "/Volumes/MacMini4/Pictures_raw" "cormorant" \
-  --model ./CLIP-DataComp --top 10
+  --model ./CLIP-DataComp --top 5
 rank	score	file	path
 1	0.3402	DSC06334.ARW	/Volumes/MacMini4/Pictures_raw/2023/25_sep_2023/DSC06334.ARW
 2	0.3388	DSC06348.ARW	/Volumes/MacMini4/Pictures_raw/2023/25_sep_2023/DSC06348.ARW
 3	0.3339	DSC06347.ARW	/Volumes/MacMini4/Pictures_raw/2023/25_sep_2023/DSC06347.ARW
 4	0.3272	DSC01154.arw	/Volumes/MacMini4/Pictures_raw/2021/10_Aug_2021/DSC01154.arw
 5	0.3198	DSC06335.ARW	/Volumes/MacMini4/Pictures_raw/2023/25_sep_2023/DSC06335.ARW
-6	0.3188	_DSC0700.ARW	/Volumes/MacMini4/Pictures_raw/2025/19_mai_2025_runde/_DSC0700.ARW
-7	0.3184	_DSC7820.ARW	/Volumes/MacMini4/Pictures_raw/2024/Storlom_hytta_9_mai_2024/_DSC7820.ARW
-8	0.3155	_DSC3710.ARW	/Volumes/MacMini4/Pictures_raw/2024/4_mai_2024/_DSC3710.ARW
-9	0.3094	_DSC1702.ARW	/Volumes/MacMini4/Pictures_raw/2025/19_mai_2025_runde/_DSC1702.ARW
-10 0.3051	_DSC0684.ARW	/Volumes/MacMini4/Pictures_raw/2025/19_mai_2025_runde/_DSC0684.ARW
 ```
 
